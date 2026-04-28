@@ -1,6 +1,12 @@
 # 🎮 GameStoreMVC
  
 Loja de Games desenvolvida em ASP.NET Core MVC com MySQL.
+
+## Integrantes : 
+- Kaio Vinicius Meireles Alves - RM553282
+- Lucas Alves de Souza -  RM553956
+- Henrique Rafael -  RM553945
+- João Pedro Chizzolini de Freitas - RM553172
  
 ## 📋 Requisitos
  
