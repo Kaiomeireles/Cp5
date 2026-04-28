@@ -1,4 +1,3 @@
-`markdown
 # 🎮 GameStoreMVC
  
 Loja de Games desenvolvida em ASP.NET Core MVC com MySQL.
