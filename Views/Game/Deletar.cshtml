@@ -1,0 +1,32 @@
+@model GameStoreMVC.Models.Game
+
+@{
+    ViewData["Title"] = "Excluir Game";
+}
+
+<div class="container d-flex justify-content-center align-items-center" style="min-height: 60vh;">
+    <div class="col-md-5 shadow-lg p-4 rounded-4 text-center" style="background-color: #ffffff; border: 1px solid var(--light-blue-bg);">
+
+        <i class="bi bi-exclamation-triangle-fill fs-1" style="color: #dc3545;"></i>
+        <h3 class="fw-bold mt-3" style="color: var(--primary-navy);">Confirmar Exclusão</h3>
+        <p class="text-muted">Tem certeza que deseja excluir o game <strong>@Model.Titulo</strong>?</p>
+
+        <div class="alert alert-light border" style="background-color: var(--light-blue-bg);">
+            <p class="mb-1"><strong>Gênero:</strong> @Model.Genero</p>
+            <p class="mb-1"><strong>Plataforma:</strong> @Model.Plataforma</p>
+            <p class="mb-0"><strong>Preço:</strong> R$ @Model.Preco.ToString("F2")</p>
+        </div>
+
+        <form asp-action="DeletarConfirmado" method="post" class="d-flex gap-2 justify-content-center">
+            @Html.AntiForgeryToken()
+            <input type="hidden" asp-for="Id" />
+            <button type="submit" class="btn btn-danger fw-bold px-4">
+                <i class="bi bi-trash me-1"></i>Sim, Excluir
+            </button>
+            <a asp-action="Index" class="btn btn-outline-secondary fw-bold px-4">
+                <i class="bi bi-x-lg me-1"></i>Cancelar
+            </a>
+        </form>
+    </div>
+</div>
+
