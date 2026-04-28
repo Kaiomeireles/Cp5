@@ -1,0 +1,84 @@
+﻿using GameStoreMVC.Interfaces;
+using GameStoreMVC.Models;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
+
+namespace GameStoreMVC.Controllers
+{
+    public class LoginController : Controller
+    {
+        private readonly IUsuarioRepositorio _usuarioRepositorio;
+
+        public LoginController(IUsuarioRepositorio usuarioRepositorio)
+        {
+            _usuarioRepositorio = usuarioRepositorio;
+        }
+
+        [HttpGet]
+        public IActionResult Login() => View();
+
+        [HttpPost]
+        public async Task<IActionResult> Login(LoginViewModel model)
+        {
+            var usuario = _usuarioRepositorio.ValidarLogin(model.Email, model.Senha);
+
+            if (usuario != null)
+            {
+                var claims = new List<Claim>
+                {
+                    new Claim(ClaimTypes.Name, usuario.Email ?? string.Empty),
+                    new Claim(ClaimTypes.Role, usuario.Cargo ?? "Usuario"),
+                    new Claim("UsuarioId", usuario.Id.ToString())
+                };
+
+                var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+
+                await HttpContext.SignInAsync(
+                    CookieAuthenticationDefaults.AuthenticationScheme,
+                    new ClaimsPrincipal(claimsIdentity)
+                );
+
+                return RedirectToAction("Index", "Home");
+            }
+
+            ViewBag.Erro = "Usuário ou senha inválidos";
+            return View();
+        }
+
+        [HttpGet]
+        public IActionResult CriarConta()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public IActionResult CriarConta(CriarContaViewModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+
+            var usuario = new Usuario
+            {
+                Email = model.Email,
+                Senha = model.Senha,
+                Cargo = "Usuario"
+            };
+
+            _usuarioRepositorio.Cadastrar(usuario);
+
+            TempData["MensagemSucesso"] = "Conta criada com sucesso! Faça login.";
+            return RedirectToAction("Login");
+        }
+
+        public async Task<IActionResult> Logout()
+        {
+            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+            return RedirectToAction("Index", "Home");
+        }
+    }
+}
+
